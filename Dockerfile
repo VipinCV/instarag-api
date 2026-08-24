@@ -9,7 +9,7 @@ COPY src/InstaRAG.ImportProducts/InstaRAG.ImportProducts.csproj src/InstaRAG.Imp
 COPY tests/InstaRAG.Tests/InstaRAG.Tests.csproj tests/InstaRAG.Tests/
 
 # Restore NuGet packages
-RUN dotnet restore InstaRAG.slnx
+RUN dotnet restore src/InstaRAG.Api/InstaRAG.Api.csproj
 
 # Copy all source code and build
 COPY . .
