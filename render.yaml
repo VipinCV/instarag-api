@@ -4,7 +4,7 @@ services:
     env: docker
     dockerfilePath: ./Dockerfile
     region: singapore # Adjust this to a region closest to your DB/users
-    plan: starter # Starter plan for adequate memory
+    plan: free # Free tier
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
