@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/InstaRAG.Api/InstaRAG.Api.csproj" />
+    <Project Path="src/InstaRAG.ImportProducts/InstaRAG.ImportProducts.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/InstaRAG.Tests/InstaRAG.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: instarag-api
+    env: docker
+    dockerfilePath: ./Dockerfile
+    region: singapore # Adjust this to a region closest to your DB/users
+    plan: starter # Starter plan for adequate memory
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      
+      # Meta / Instagram Secrets
+      - key: Meta__AppId
+        sync: false
+      - key: Meta__AppSecret
+        sync: false
+      - key: Meta__PageAccessToken
+        sync: false
+      - key: Meta__VerifyToken
+        sync: false
+      - key: Meta__PageId
+        sync: false
+
+      # Google Cloud / Vertex AI Configuration
+      - key: GoogleCloud__ProjectId
+        sync: false
+      - key: GoogleCloud__Location
+        value: asia-south1
+      - key: GoogleCloud__RagCorpusResourceName
+        sync: false
+      - key: GoogleCloud__RagCorpusDisplayName
+        value: my-product-catalog
+      - key: GoogleCloud__GcsBucketName
+        sync: false
+      
+      # Google Cloud Service Account JSON (injected as unescaped string)
+      - key: GoogleCloud__ServiceAccountJson
+        sync: false
+
+      # Rate Limiting
+      - key: RateLimit__MaxRequests
+        value: 10
+      - key: RateLimit__WindowSeconds
+        value: 60

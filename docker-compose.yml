@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  instarag-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: instarag-api
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      # ─── Meta / Instagram ──────────────────────────────
+      - Meta__AppId=${META_APP_ID}
+      - Meta__AppSecret=${META_APP_SECRET}
+      - Meta__PageAccessToken=${META_PAGE_ACCESS_TOKEN}
+      - Meta__VerifyToken=${META_VERIFY_TOKEN:-dev_verify_token_123}
+      - Meta__PageId=${META_PAGE_ID}
+      # ─── Google Cloud ──────────────────────────────────
+      - GoogleCloud__ProjectId=${GCP_PROJECT_ID}
+      - GoogleCloud__Location=${GCP_LOCATION:-asia-south1}
+      - GoogleCloud__RagCorpusResourceName=${RAG_CORPUS_RESOURCE_NAME}
+      - GoogleCloud__RagCorpusDisplayName=${RAG_CORPUS_DISPLAY_NAME:-my-product-catalog}
+      - GoogleCloud__GcsBucketName=${GCS_BUCKET_NAME}
+      - GoogleCloud__ServiceAccountJson=${SERVICE_ACCOUNT_JSON}
+      # ─── Rate Limiting ─────────────────────────────────
+      - RateLimit__MaxRequests=${RATE_LIMIT_MAX_REQUESTS:-10}
+      - RateLimit__WindowSeconds=${RATE_LIMIT_WINDOW_SECONDS:-60}
+    volumes: []
+    restart: unless-stopped
