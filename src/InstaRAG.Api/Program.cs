@@ -3,6 +3,7 @@ using InstaRAG.Api.Middleware;
 using InstaRAG.Api.Services;
 using Polly;
 using Polly.Extensions.Http;
+using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication;
 using System.Text.Encodings.Web;
 using System.Security.Claims;
