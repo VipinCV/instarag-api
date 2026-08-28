@@ -85,7 +85,7 @@ class Program
 
         // ─── Step 3: Upload to GCS ──────────────────────────────────────
         Console.WriteLine($"☁️  Uploading to GCS bucket: gs://{bucketName}/products/");
-        var gcsUris = await UploadToGcsAsync(bucketName, documents, serviceAccountJson);
+        var gcsUris = await UploadToGcsAsync(bucketName, documents, serviceAccountJson, projectId);
         Console.WriteLine($"   Uploaded {gcsUris.Count} files.\n");
 
         // ─── Step 4: Create RAG Corpus (optional) ───────────────────────
@@ -155,7 +155,8 @@ class Program
         {
             HeaderValidated = null,
             MissingFieldFound = null,
-            TrimOptions = TrimOptions.Trim
+            TrimOptions = TrimOptions.Trim,
+            PrepareHeaderForMatch = args => args.Header.Replace("_", "").ToLowerInvariant()
         };
         using var csv = new CsvReader(reader, csvConfig);
         return csv.GetRecords<ProductRecord>().ToList();
@@ -171,10 +172,18 @@ class Program
 
     // ─── GCS Upload ─────────────────────────────────────────────────────
 
-    static async Task<List<string>> UploadToGcsAsync(string bucketName, Dictionary<string, string> documents, string serviceAccountJson)
+    static async Task<List<string>> UploadToGcsAsync(string bucketName, Dictionary<string, string> documents, string serviceAccountJson, string projectId)
     {
         var credential = GoogleCredential.FromJson(serviceAccountJson.Replace("\\n", "\n"));
         var storageClient = await StorageClient.CreateAsync(credential);
+        
+        try {
+            await storageClient.GetBucketAsync(bucketName);
+        } catch (Google.GoogleApiException ex) when (ex.HttpStatusCode == System.Net.HttpStatusCode.NotFound) {
+            Console.WriteLine($"   Bucket {bucketName} not found. Creating it...");
+            await storageClient.CreateBucketAsync(projectId, bucketName);
+        }
+
         var uris = new List<string>();
 
         foreach (var (fileName, content) in documents)
