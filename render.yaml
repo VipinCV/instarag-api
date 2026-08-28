@@ -11,15 +11,15 @@ services:
       
       # Meta / Instagram Secrets
       - key: Meta__AppId
-        sync: false
+        value: "2572236153212630"
       - key: Meta__AppSecret
-        sync: false
+        value: "823f332ad5611a2e1be16027667e6cb0"
       - key: Meta__PageAccessToken
-        sync: false
+        value: "EAAkjb2YwztYBSYZClIvjaNuZBQgTmdoQlUtXEPC3X86kD5KHrA9CMt8aUF9Hb20RTYdDRhvRE2sHWqTpbRcUg3aCJqydsD1idHm5AiAHDEZB5deZCMNhYf6ZCkjtbh6qPZAqGbVwUlAjDXYyHrEMZBJWj4ynlmKEozObckO8lX6f2ttUOZAy9QtfRAvHTGqYU1hDjr0gsQZDZD"
       - key: Meta__VerifyToken
-        sync: false
+        value: "instarag_verify_2024"
       - key: Meta__PageId
-        sync: false
+        value: "61593305486441"
 
       # Google Cloud / Vertex AI Configuration
       - key: GoogleCloud__ProjectId

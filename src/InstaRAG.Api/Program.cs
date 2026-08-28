@@ -3,8 +3,20 @@ using InstaRAG.Api.Middleware;
 using InstaRAG.Api.Services;
 using Polly;
 using Polly.Extensions.Http;
+using Microsoft.AspNetCore.Authentication;
+using System.Text.Encodings.Web;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// ─── Simple No‑Auth scheme (required because we call Forbid() on webhook verification failures) ───
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = "NoAuth";
+    options.DefaultChallengeScheme = "NoAuth";
+    options.DefaultForbidScheme = "NoAuth";
+})
+.AddScheme<AuthenticationSchemeOptions, NoAuthHandler>("NoAuth", _ => { });
 
 // ─── Configuration Binding ───────────────────────────────────────────
 builder.Services.Configure<MetaSettings>(
@@ -70,6 +82,8 @@ var app = builder.Build();
 
 // ─── Middleware Pipeline ─────────────────────────────────────────────
 app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
@@ -108,3 +122,16 @@ static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
 
 // Make Program class accessible for integration tests
 public partial class Program { }
+
+// Simple authentication handler that always succeeds
+public class NoAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+{
+    public NoAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
+                         ILoggerFactory logger,
+                         UrlEncoder encoder,
+                         ISystemClock clock)
+        : base(options, logger, encoder, clock) { }
+
+    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+        => Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(), Scheme.Name)));
+}
