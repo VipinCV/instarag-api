@@ -43,8 +43,22 @@ public class GoogleCloudSettings
             return string.Empty;
         }
 
-        // Return the raw JSON string as stored (newlines are already correctly represented)
-        return ServiceAccountJson.Trim();
+        // If the value appears to be a file path, read the file content
+        if (System.IO.File.Exists(ServiceAccountJson))
+        {
+            try
+            {
+                return System.IO.File.ReadAllText(ServiceAccountJson);
+            }
+            catch (Exception)
+            {
+                // Fallback to raw value on read failure
+                return ServiceAccountJson;
+            }
+        }
+
+        // Return the raw JSON string as stored (escaped newlines are preserved)
+        return ServiceAccountJson;
     }
 
     /// <summary>Base URL for Vertex AI API in the configured region.</summary>
