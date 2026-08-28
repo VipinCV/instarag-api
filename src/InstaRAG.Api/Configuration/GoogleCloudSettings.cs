@@ -43,6 +43,20 @@ public class GoogleCloudSettings
             return string.Empty;
         }
 
+        // If the value looks like a file path, read the file content
+        if (System.IO.File.Exists(ServiceAccountJson))
+        {
+            try
+            {
+                return System.IO.File.ReadAllText(ServiceAccountJson);
+            }
+            catch (Exception)
+            {
+                // If we can’t read the file, fall back to empty string (RagService will log a warning)
+                return string.Empty;
+            }
+        }
+
         // Return the injected JSON, unescaping newlines for cloud environments (e.g., Render, Docker)
         return ServiceAccountJson.Trim().Replace("\\n", "\n");
     }
